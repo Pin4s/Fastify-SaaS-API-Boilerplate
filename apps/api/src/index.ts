@@ -1,9 +1,5 @@
-import { ability } from "@saas/auth"
+import { defineAbilityFor } from "@saas/auth"
 
-const userCanInvite = ability.can('invite', 'User');
-const userCanDelete = ability.can('delete', 'User');
+const ability = defineAbilityFor({ role: 'MEMBER', id: 'user-id' });
 
-
-
-console.log(`User can invite: ${userCanInvite}`);
-console.log(`User can delete: ${userCanDelete}`);
+console.log(ability.can('get', 'User')); // true
