@@ -1,7 +1,7 @@
 
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { primsa } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
 import { z } from "zod";
 
@@ -21,7 +21,7 @@ export async function createAccont(app: FastifyInstance) {
         async (request, reply) => {
             const { name, email, password } = request.body
 
-            const userWithSameEmail = await primsa.user.findUnique({
+            const userWithSameEmail = await prisma.user.findUnique({
                 where: { email }
             })
 
@@ -33,7 +33,7 @@ export async function createAccont(app: FastifyInstance) {
 
             const [, domain] = email.split("@")
 
-            const autoJoinOrganization = await primsa.organization.findFirst({
+            const autoJoinOrganization = await prisma.organization.findFirst({
                 where: {
                     domain,
                     shouldAttachUsersByDomain: true
@@ -42,7 +42,7 @@ export async function createAccont(app: FastifyInstance) {
 
             const passwordHash = await hash(password, 8)
 
-            await primsa.user.create({
+            await prisma.user.create({
                 data: {
                     name,
                     email,

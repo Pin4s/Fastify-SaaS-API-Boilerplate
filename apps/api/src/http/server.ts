@@ -9,7 +9,9 @@ import {
 
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import fastifySwagger from '@fastify/swagger';
+import fastifyJwt from '@fastify/jwt';
 
+import { authenticateWithPassword } from './routes/auth/authenticateWithPassword';
 import { createAccont } from './routes/auth/createAccount';
 
 const PORT = 3333
@@ -33,14 +35,18 @@ app.register(fastifySwagger, {
 
 app.register(fastifySwaggerUI, {
     routePrefix: '/docs',
-})  
+})
 
+
+app.register(fastifyJwt, {
+    secret: 'my-jwt-secret'
+})
 
 app.register(fastifyCors)
 
 //Rotas
 app.register(createAccont)
-
+app.register(authenticateWithPassword)
 
 app.listen({ port: PORT }).then(() => {
     console.log(`Server is running on ${PORT}`);
