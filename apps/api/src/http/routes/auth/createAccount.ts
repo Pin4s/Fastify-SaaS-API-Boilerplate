@@ -31,14 +31,29 @@ export async function createAccont(app: FastifyInstance) {
                 })
             }
 
+            const [, domain] = email.split("@")
+
+            const autoJoinOrganization = await primsa.organization.findFirst({
+                where: {
+                    domain,
+                    shouldAttachUsersByDomain: true
+                }
+            })
+
             const passwordHash = await hash(password, 8)
 
             await primsa.user.create({
                 data: {
                     name,
                     email,
-                    passwordHash
-                }
+                    passwordHash,
+                    member_on: autoJoinOrganization ? {
+                        create: {
+                            organizationId: autoJoinOrganization.id,
+                        }
+                    } : undefined,
+                }, 
+
             })
 
             return reply.status(201).send({
