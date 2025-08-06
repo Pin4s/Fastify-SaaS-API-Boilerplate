@@ -3,6 +3,7 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z, { email } from "zod";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
+import { BadRequestError } from "../_erros/badRequestErrors";
 
 export async function authenticateWithPassword(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().post('/sessions/password', {
@@ -12,7 +13,12 @@ export async function authenticateWithPassword(app: FastifyInstance) {
             body: z.object({
                 email: z.string().email(),
                 password: z.string().min(6),
-            })
+            }),
+            response:{
+                201: z.object({
+                    token: z.string(),
+                })
+            }
         }
     },
         async (request, reply) => {
@@ -23,24 +29,18 @@ export async function authenticateWithPassword(app: FastifyInstance) {
             });
 
             if (!userFromEmail) {
-                return reply.status(400).send({
-                    message: 'Invalid email or password.'
-                });
+                throw new BadRequestError('Invalid credentials');
             }
 
 
             if (userFromEmail.passwordHash === null) {
-                return reply.status(400).send({
-                    message: 'User does not have a password set.'
-                });
+                throw new BadRequestError('User does not have a password set.');
             }
 
             const isPasswordValid = await compare(password, userFromEmail.passwordHash)
 
             if (!isPasswordValid) {
-                return reply.status(400).send({
-                    message: 'Invalid email or password.'
-                });
+                throw new BadRequestError('Invalid credentials');
             }
 
 

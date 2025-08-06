@@ -13,13 +13,20 @@ import fastifyJwt from '@fastify/jwt';
 
 import { authenticateWithPassword } from './routes/auth/authenticateWithPassword';
 import { createAccont } from './routes/auth/createAccount';
+import { getProfile } from './routes/auth/getProfile';
+import { errorHandler } from './errorHandler';
+import { requestPasswordRecover } from './routes/auth/requestPasswordRecover';
+import { resetPassword } from './routes/auth/resetPassword';
+import { authenticateWithGithub } from './routes/auth/authenticateWithGithub';
+import { env } from '@saas/env';
 
-const PORT = 3333
+
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
+app.setErrorHandler(errorHandler)
 
 app.register(fastifySwagger, {
     openapi: {
@@ -28,7 +35,16 @@ app.register(fastifySwagger, {
             description: 'Full-stack SaaS with multi-tenant & RBAC.',
             version: '1.0.0',
         },
-        servers: [],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            }
+
+        },
     },
     transform: jsonSchemaTransform,
 })
@@ -39,7 +55,7 @@ app.register(fastifySwaggerUI, {
 
 
 app.register(fastifyJwt, {
-    secret: 'my-jwt-secret'
+    secret: env.JWT_SECRET,
 })
 
 app.register(fastifyCors)
@@ -47,7 +63,12 @@ app.register(fastifyCors)
 //Rotas
 app.register(createAccont)
 app.register(authenticateWithPassword)
+app.register(getProfile)
+app.register(requestPasswordRecover)
+app.register(resetPassword)
+app.register(authenticateWithGithub)
 
-app.listen({ port: PORT }).then(() => {
-    console.log(`Server is running on ${PORT}`);
+app.listen({ port: env.SERVER_PORT }).then(() => {
+    console.log(`Server is running on ${env.SERVER_PORT}`);
 })
+
