@@ -19,6 +19,7 @@ import { requestPasswordRecover } from './routes/auth/requestPasswordRecover';
 import { resetPassword } from './routes/auth/resetPassword';
 import { authenticateWithGithub } from './routes/auth/authenticateWithGithub';
 import { env } from '@saas/env';
+import { createOrganization } from './routes/orgs/createOrganization';
 
 
 
@@ -67,6 +68,8 @@ app.register(getProfile)
 app.register(requestPasswordRecover)
 app.register(resetPassword)
 app.register(authenticateWithGithub)
+
+app.register(createOrganization)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
     console.log(`Server is running on ${env.SERVER_PORT}`);
