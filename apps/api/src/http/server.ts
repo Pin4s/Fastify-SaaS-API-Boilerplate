@@ -20,6 +20,7 @@ import { resetPassword } from './routes/auth/resetPassword';
 import { authenticateWithGithub } from './routes/auth/authenticateWithGithub';
 import { env } from '@saas/env';
 import { createOrganization } from './routes/orgs/createOrganization';
+import { getMembership } from './routes/orgs/getMembership';
 
 
 
@@ -69,6 +70,7 @@ app.register(requestPasswordRecover)
 app.register(resetPassword)
 app.register(authenticateWithGithub)
 
+app.register(getMembership)
 app.register(createOrganization)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
