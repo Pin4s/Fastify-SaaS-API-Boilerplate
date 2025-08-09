@@ -21,6 +21,8 @@ import { authenticateWithGithub } from './routes/auth/authenticateWithGithub';
 import { env } from '@saas/env';
 import { createOrganization } from './routes/orgs/createOrganization';
 import { getMembership } from './routes/orgs/getMembership';
+import { getOrganization } from './routes/orgs/getOrganization';
+import { getOrganizations } from './routes/orgs/getOrganizations';
 
 
 
@@ -70,8 +72,11 @@ app.register(requestPasswordRecover)
 app.register(resetPassword)
 app.register(authenticateWithGithub)
 
+//Organization
 app.register(getMembership)
 app.register(createOrganization)
+app.register(getOrganization)
+app.register(getOrganizations)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
     console.log(`Server is running on ${env.SERVER_PORT}`);
