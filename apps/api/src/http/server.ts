@@ -30,6 +30,7 @@ import { createProject } from './routes/projects/createProject';
 import { deleteProject } from './routes/projects/deleteProject';
 import { getProject } from './routes/projects/getProject';
 import { getProjects } from './routes/projects/getProjects';
+import { updateProject } from './routes/projects/updateProject';
 
 
 
@@ -93,6 +94,7 @@ app.register(createProject)
 app.register(deleteProject)
 app.register(getProject)
 app.register(getProjects)
+app.register(updateProject)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
     console.log(`Server is running on ${env.SERVER_PORT}`);
