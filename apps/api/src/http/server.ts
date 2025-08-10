@@ -25,6 +25,7 @@ import { getOrganization } from './routes/orgs/getOrganization';
 import { getOrganizations } from './routes/orgs/getOrganizations';
 import { updateOrganization } from './routes/orgs/updateOrganization';
 import { shutdownOrganization } from './routes/orgs/shutdownOrganization';
+import { transferOrganization } from './routes/orgs/transferOrganization';
 
 
 
@@ -81,6 +82,7 @@ app.register(getOrganization)
 app.register(getOrganizations)
 app.register(updateOrganization)
 app.register(shutdownOrganization)
+app.register(transferOrganization)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
     console.log(`Server is running on ${env.SERVER_PORT}`);
