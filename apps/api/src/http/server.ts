@@ -29,6 +29,7 @@ import { transferOrganization } from './routes/orgs/transferOrganization';
 import { createProject } from './routes/projects/createProject';
 import { deleteProject } from './routes/projects/deleteProject';
 import { getProject } from './routes/projects/getProject';
+import { getProjects } from './routes/projects/getProjects';
 
 
 
@@ -91,6 +92,7 @@ app.register(transferOrganization)
 app.register(createProject)
 app.register(deleteProject)
 app.register(getProject)
+app.register(getProjects)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
     console.log(`Server is running on ${env.SERVER_PORT}`);
