@@ -1,83 +1,122 @@
-# Next.js SaaS + RBAC
+# Multi-Tenant SaaS API Boilerplate
 
-This project contains all the necessary boilerplate to setup a multi-tenant SaaS with Next.js including authentication and RBAC authorization.
+This project is a comprehensive API backend for a multi-tenant SaaS boilerplate. It establishes the foundation for applications where multiple organizations can securely and independently manage their own projects, members, and billing.
 
-## Features
+While part of a full-stack challenge, I chose to focus exclusively on the backend development to deepen my skills in API design, software architecture, and complex authorization systems.
 
-### Authentication
+## 🚀 Key Features & Technical Challenges
 
-- [ ] It should be able to authenticate using e-mail & password;
-- [ ] It should be able to authenticate using Github account;
-- [ ] It should be able to recover password using e-mail;
-- [ ] It should be able to create an account (e-mail, name and password);
+This project was not just about creating endpoints, but about building a robust foundation. The most interesting challenges I overcame were:
 
-### Organizations
+1.  **Role-Based Access Control (RBAC) Architecture:** This is the core of the application. I designed and implemented a secure and granular permission system using **CASL**. This ensures clear role differentiation:
+    *   **Owner:** Full control over the organization.
+    *   **Admin:** Manages projects and members.
+    *   **Member:** Restricted access to create and manage their own projects.
+    *   **Billing:** Exclusive access to the organization's billing section.
+2.  **Monorepo Structure:** The codebase is organized into independent packages (auth, env) using **PNPM Workspaces** and managed with **Turborepo**. This approach enforced a high degree of code sharing and consistent configuration (ESLint, TSConfig) across the entire project.
+3.  **Mastery of the Fastify Ecosystem:** The entire project is built on **Fastify**, leveraging its high-performance nature. The learning curve involved applying plugins, lifecycle hooks, and its powerful schema validation system with **Zod** to guarantee the security and integrity of every API request.
 
-- [ ] It should be able to create a new organization;
-- [ ] It should be able to get organizations to which the user belongs;
-- [ ] It should be able to update an organization;
-- [ ] It should be able to shutdown an organization;
-- [ ] It should be able to transfer organization ownership;
+## 🛠️ Tech Stack
 
-### Invites
+The stack was chosen with a focus on modern, performant, and TypeScript-first tools.
 
-- [ ] It should be able to invite a new member (e-mail, role);
-- [ ] It should be able to accept an invite;
-- [ ] It should be able to revoke a pending invite;
+| Tool | Description |
+| :--- | :--- |
+| **Node.js** | The runtime environment for the server. |
+| **Fastify** | A high-performance web framework, focusing on speed and low overhead. |
+| **TypeScript** | The primary language, ensuring code robustness and type safety. |
+| **Prisma** | A next-generation ORM for interacting safely with the database. |
+| **PostgreSQL** | The relational database, managed via Docker. |
+| **Zod** | A library for schema declaration and validation. |
+| **JWT & OAuth 2.0** | Authentication implementation using tokens and GitHub social login. |
+| **PNPM & Turborepo**| Package and script management in a Monorepo environment. |
+| **Docker** | Containerization of the database for a consistent development environment. |
+| **Swagger**| Automated and interactive API endpoint documentation. |
 
-### Members
+## ⚙️ Getting Started
 
-- [ ] It should be able to get organization members;
-- [ ] It should be able to update a member role;
+To run this project locally, follow the steps below.
 
-### Projects
+### **Prerequisites**
 
-- [ ] It should be able to get projects within a organization;
-- [ ] It should be able to create a new project (name, url, description);
-- [ ] It should be able to update a project (name, url, description);
-- [ ] It should be able to delete a project;
+-   [Node.js](https://nodejs.org/) (v18 or higher)
+-   [PNPM](https://pnpm.io/installation)
+-   [Docker](https://www.docker.com/products/docker-desktop/)
 
-### Billing
+### **Installation & Running**
 
-- [ ] It should be able to get billing details for organization ($20 per project / $10 per member excluding billing role);
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/Pin4s/Fastify-SaaS-API-Boilerplate
+    cd SaaS-RBAC
+    ```
 
-## RBAC
+2.  **Environment Variables:**
+    Create a copy of the `.env.example` file at the root of the project and rename it to `.env`. Then, fill in all the required variables.
+    ```bash
+    cp .env.example .env
+    ```
 
-Roles & permissions.
+3.  **Start the Database Container:**
+    This command will start a PostgreSQL container using Docker Compose.
+    ```bash
+    docker compose up -d
+    ```
 
-### Roles
+4.  **Install Dependencies:**
+    PNPM will automatically install the dependencies for all packages in the monorepo.
+    ```bash
+    pnpm install
+    ```
 
-- Owner (count as administrator)
-- Administrator
-- Member
-- Billing (one per organization)
-- Anonymous
+5.  **Apply Database Migrations:**
+    This will create all necessary tables in your PostgreSQL database.
+    ```bash
+    pnpm --filter @saas/api db:migrate
+    ```
 
-### Permissions table
+6.  **Start the Development Server:**
+    Turborepo will start the API server, which will be available at `http://localhost:3333`.
+    ```bash
+    pnpm dev
+    ```
 
-|                          | Administrator | Member | Billing | Anonymous |
-| ------------------------ | ------------- | ------ | ------- | --------- |
-| Update organization      | ✅            | ❌     | ❌      | ❌        |
-| Delete organization      | ✅            | ❌     | ❌      | ❌        |
-| Invite a member          | ✅            | ❌     | ❌      | ❌        |
-| Revoke an invite         | ✅            | ❌     | ❌      | ❌        |
-| List members             | ✅            | ✅     | ✅      | ❌        |
-| Transfer ownership       | ⚠️            | ❌     | ❌      | ❌        |
-| Update member role       | ✅            | ❌     | ❌      | ❌        |
-| Delete member            | ✅            | ⚠️     | ❌      | ❌        |
-| List projects            | ✅            | ✅     | ✅      | ❌        |
-| Create a new project     | ✅            | ✅     | ❌      | ❌        |
-| Update a project         | ✅            | ⚠️     | ❌      | ❌        |
-| Delete a project         | ✅            | ⚠️     | ❌      | ❌        |
-| Get billing details      | ✅            | ❌     | ✅      | ❌        |
-| Export billing details   | ✅            | ❌     | ✅      | ❌        |
+## 🔗 API Documentation
 
-> ✅ = allowed
-> ❌ = not allowed
-> ⚠️ = allowed w/ conditions
+After starting the server, the complete and interactive API documentation, generated by Swagger, is available at:
 
-#### Conditions
+**[http://localhost:3333/docs](http://localhost:3333/docs)**
 
-- Only owners may transfer organization ownership;
-- Only administrators and project authors may update/delete the project;
-- Members can leave their own organization;
+You can explore all available routes, view their parameters, request bodies, and responses, as well as test them directly from your browser.
+
+## 🧑🏼‍💻 RBAC: Roles and Permissions
+
+| Description | Owner (Admin) | Member | Billing | Anonymous |
+| :--- | :---: | :---: | :---: | :---: |
+| **Organization** | | | | |
+| Update organization | ✅ | ❌ | ❌ | ❌ |
+| Shutdown organization | ✅ | ❌ | ❌ | ❌ |
+| Transfer ownership | 🟡 | ❌ | ❌ | ❌ |
+| **Members** | | | | |
+| Invite a member | ✅ | ❌ | ❌ | ❌ |
+| Get members | ✅ | ✅ | ✅ | ❌ |
+| Update member role | ✅ | ❌ | ❌ | ❌ |
+| Remove member | ✅ | 🟡 | ❌ | ❌ |
+| **Invites** | | | | |
+| Get pending invites | ✅ | ✅ | ✅ | ❌ |
+| Revoke a pending invite| ✅ | ❌ | ❌ | ❌ |
+| **Projects** | | | | |
+| Get projects | ✅ | ✅ | ✅ | ❌ |
+| Create a new project | ✅ | ✅ | ❌ | ❌ |
+| Update a project | ✅ | 🟡 | ❌ | ❌ |
+| Delete a project | ✅ | 🟡 | ❌ | ❌ |
+| **Billing** | | | | |
+| Get billing details | ✅ | ❌ | ✅ | ❌ |
+
+**Legend:** ✅ Allowed | ❌ Not allowed | 🟡 Allowed with conditions
+
+#### Conditions:
+
+*   Only an organization's owner may transfer ownership.
+*   Only an organization's owner or the project's author may update/delete a project.
+*   Members can only be removed by an owner or by themselves (leaving the organization).
